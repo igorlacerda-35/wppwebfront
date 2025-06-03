@@ -7,7 +7,13 @@ function App() {
   useEffect(() => {
     fetch("https://wppweb.onrender.com/status")
       .then((res) => res.json())
-      .then((data) => setConversations(data.conversations || {}));
+      .then((data) => {
+        console.log("Dados recebidos:", data);
+        setConversations(data.conversations || {});
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar dados:", err);
+      });
   }, []);
 
   const filteredEntries = Object.entries(conversations).filter(([wa_id]) =>
@@ -24,6 +30,10 @@ function App() {
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
       />
+
+      {filteredEntries.length === 0 && (
+        <p className="text-gray-500">Nenhuma conversa encontrada.</p>
+      )}
 
       {filteredEntries.map(([wa_id, data]) => (
         <div key={wa_id} className="border rounded p-4 mb-4 shadow">
